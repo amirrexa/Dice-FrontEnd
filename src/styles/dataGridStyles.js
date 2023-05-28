@@ -1,8 +1,14 @@
 //dataGridStyles.js
-const dataGridStyles = {bgcolor: "#101420",
+const dataGridStyles = {
 boxShadow: 2,
 border: 1,
 color: "white",
+width: '100%',
+margintop: '30px',
+bgcolor: "#1c2233",
+fontSize: '15px',
+fontWeight: 'normal',
+justifyContent: 'center',
 
 "& .MuiDataGrid-root .MuiDataGrid-iconSeparator": {
   color: "white", // Change the color of the separator line
@@ -14,13 +20,13 @@ color: "white",
   color: "white", // Change the color of the sorting arrows
 },
 "& .MuiDataGrid-root .MuiTablePagination-select": {
-  color: "white", // Change the color of the dropdown
+  color: "red", // Change the color of the dropdown
 },
 "& .MuiDataGrid-root .MuiTablePagination-caption": {
-  color: "white", // Change the color of the "Rows per page" text
+  color: "red", // Change the color of the "Rows per page" text
 },
 "& .MuiDataGrid-cell:hover": {
-  color: "primary.main",
+  color: "#818cf6",
 },
 "& .MuiDataGrid-cell:focus": {
   outline: "none", // Remove the focus outline
@@ -47,4 +53,5 @@ color: "white",
   outline: "none", // Remove the focus outline on column header titles
 },
 }
+
 export default dataGridStyles

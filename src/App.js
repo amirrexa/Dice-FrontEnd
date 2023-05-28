@@ -5,49 +5,46 @@ import * as React from "react";
 //DataGrid Component ↓
 
 //MUI Components ↓
-import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import {
   Button,
-  Container,
-  ButtonGroup,
   Input,
-  Box,
   Slider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   AppBar,
-  Paper,
   Toolbar,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
-import { styled } from "@mui/system";
-import { createTheme, ThemeProvider } from "@mui/system";
+import {
+  InfoOutlined,
+  DescriptionOutlined,
+  FullscreenOutlined,
+  FullscreenExitOutlined,
+  VolumeOffOutlined,
+  VolumeUpOutlined,
+} from "@mui/icons-material/";
+
 //My Custom Components ↓
-import Navbar from "./components/Navbar";
 import SplitButton from "./components/SplitButton";
 //My Custom Styles ↓
 import dataGridStyles from "./styles/dataGridStyles";
 
 function App() {
-  //THEME
-  const theme = createTheme({
-    palette: {
-      type: "dark",
-      primary: {
-        main: "#90caf9",
-      },
-      secondary: {
-        main: "#f48fb1",
-      },
-    },
-  });
   //HOOKS
   const [value, setValue] = React.useState(50);
-  const [currency, setCurrency] = React.useState("USD");
-
+  const [currency, setCurrency] = React.useState("USDT");
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
+  const [isMuted, setIsMuted] = React.useState(false);
   //HANDLERS
+
+  const toggleMute = () => {
+    setIsMuted((prevMuted) => !prevMuted);
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen((prevScreen) => !prevScreen)
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -96,136 +93,169 @@ function App() {
   ];
 
   return (
-    <Container sx={{ bgcolor: "#101420" }}>
-      <div className="App">
-        <header>
-          <AppBar>
-            <Toolbar
+    <>
+      <AppBar>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              color: "#818cf6",
+              bgcolor: "#1c2233",
+              margin: "0 8px",
+              fontWeight: 700,
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "darkblue",
+                color: "white",
+              },
+            }}
+          >
+            $Swap
+          </Button>
+          <div>
+            <SplitButton
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                aligItems: "center",
+                margin: "0 8px",
+                borderColor: "black",
+                padding: "7px 16px",
+                "&:hover": {
+                  backgroundColor: "darkblue",
+                  color: "white",
+                },
+              }}
+              options={["PEPE Chain", "BNB SmartChain", "Death Chain"]}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                // right: 2,
+                color: "white",
+                textTransform: "none",
+                bgcolor: "#1c2233",
+                // margin: "0 8px",
+                fontWeight: 700,
+                marginLeft: "8px",
+                "&:hover": {
+                  backgroundColor: "darkblue",
+                },
               }}
             >
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  color: "red",
-                  bgcolor: "#1c2233",
-                  margin: "0 8px",
-                  "&:hover": {
-                    backgroundColor: "darkblue",
-                    color: "white",
-                  },
-                }}
-              >
-                $Swap
-              </Button>
-              <div>
-                <SplitButton
-                  sx={{
-                    margin: "0 8px",
-                    borderColor: "black",
-                    "&:hover": {
-                      backgroundColor: "darkblue",
-                      color: "white",
-                    },
-                  }}
-                  options={["PEPE Chain", "BNB SmartChain", "Death Chain"]}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    right: 2,
-                    color: "red",
-                    bgcolor: "#1c2233",
-                    margin: "0 8px",
-                    marginLeft: "auto",
-                    "&:hover": {
-                      backgroundColor: "darkblue",
-                      color: "white",
-                    },
-                  }}
-                >
-                  Connect Wallet
-                </Button>
-              </div>
-            </Toolbar>
-          </AppBar>
-        </header>
+              Connect Wallet
+            </Button>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <body>
+        <div className="info-bar">
+          <Toolbar>
+            <b
+              style={{
+                color: "white",
+                fontSize: 18,
+                // backgroundColor: "#818cf6",
+                // outline: "4px solid #818cf6",
+                borderRadius: "8px",
+                marginInline: "2px",
+              }}
+            >
+              Dice
+            </b>
+            <Tooltip title="Keep Losing Your Money 🤑💸" placement="bottom">
+              <IconButton sx={{ color: "white", marginInline: "2px" }}>
+                <InfoOutlined />
+              </IconButton>
+            </Tooltip>
+            <IconButton sx={{ color: "white", marginInline: "2px" }}>
+              <DescriptionOutlined />
+            </IconButton>
+            <IconButton onClick={toggleFullscreen} sx={{ color: "white", marginInline: "2px" }}>
+              {isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+            </IconButton>
+            <IconButton onClick={toggleMute} sx={{ color: "white", marginInline: "2px" }}>
+              {isMuted ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
+            </IconButton>
+            <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              color: "#818cf6",
+              bgcolor: "#1c2233",
+              marginLeft: 'auto',
+              fontWeight: 700,
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "darkblue",
+                color: "white",
+              },
+            }}
+          >Analytics</Button>
+          </Toolbar>
+        </div>
+        <div className="content-box">
+          <div className="slider-container">
+            <div className="slider-value">{value}</div>
+            <Slider
+              value={value}
+              onChange={handleChange}
+              min={1}
+              max={99}
+              color="secondary"
+              className="slider"
+              sx={{
+                "& .MuiSlider-rail": { color: "green", opacity: 1 },
+                "& .MuiSlider-track": { color: "red" },
+                "& .MuiSlider-thumb": { color: "green" },
+              }}
+            />
+          </div>
+          <div className="input-container">
+            <button onClick={handleConfirm} className="confirm-button">
+              BET
+            </button>
+            <Input
+              value={value}
+              onChange={handleInputChange}
+              onBlur={handleBlur}
+              inputProps={{
+                step: 1,
+                min: 1,
+                max: 99,
+                type: "text",
+              }}
+              className="input-field"
+            />
+            <select
+              value={currency}
+              onChange={handleCurrencyChange}
+              className="currency-select"
+            >
+              <option value="USD">USDT</option>
+              <option value="EUR">BNB</option>
+              <option value="GBP">PEPE</option>
+            </select>
+          </div>
+        </div>
 
-        <body>
-            <center>
-              <div className="image-container">
-                <img src={background} alt="Background" />
-              </div>
-              <div className="content-box">
-                {/* <div className="container"> */}
-                <div className="slider-container">
-                  <div className="slider-value">{value}</div>
-                  <Slider
-                    value={value}
-                    onChange={handleChange}
-                    min={1}
-                    max={99}
-                    color="secondary"
-                    className="slider"
-                    sx={{
-                      "& .MuiSlider-rail": { color: "green", opacity: 1 },
-                      "& .MuiSlider-track": { color: "red" },
-                      "& .MuiSlider-thumb": { color: "green" },
-                    }}
-                  />
-                </div>
-                <div className="input-container">
-                  <select
-                    value={currency}
-                    onChange={handleCurrencyChange}
-                    className="currency-select"
-                  >
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                  </select>
-                  <Input
-                    value={value}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    inputProps={{
-                      step: 1,
-                      min: 1,
-                      max: 99,
-                      type: "number",
-                    }}
-                    className="input-field"
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleConfirm}
-                    className="confirm-button"
-                  >
-                    Confirm
-                  </Button>
-                </div>
-              </div>
-              {/* </div> */}
-            </center>
-        </body>
-
-        {/* <footer><center><Table headData={headData} rowData={rowData}></Table></center></footer> */}
-        <footer>
-          <Container sx={{ mt: 2 }}>
-            <center>
-              <div style={{ height: 300, width: "70%" }}>
-                <DataGrid rows={rows} columns={columns} sx={dataGridStyles} />
-              </div>
-            </center>
-          </Container>
-        </footer>
-      </div>
-    </Container>
+        <div
+          style={{
+            height: 300,
+            width: "60%",
+            margin: "auto",
+            marginTop: "24px",
+          }}
+        >
+          <DataGrid rows={rows} columns={columns} sx={dataGridStyles} />
+        </div>
+      </body>
+    </>
   );
 }
 
