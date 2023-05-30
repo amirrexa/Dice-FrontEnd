@@ -1,19 +1,20 @@
 import "./App.css";
-import background from "./background.png";
-
 import * as React from "react";
 //DataGrid Component ↓
-
-//MUI Components ↓
 import { DataGrid } from "@mui/x-data-grid";
+//MUI Components ↓
 import {
   Button,
-  Input,
   Slider,
   AppBar,
   Toolbar,
   Tooltip,
   IconButton,
+  InputAdornment,
+  TextField,
+  Select,
+  MenuItem,
+  Input,
 } from "@mui/material";
 import {
   InfoOutlined,
@@ -23,11 +24,13 @@ import {
   VolumeOffOutlined,
   VolumeUpOutlined,
 } from "@mui/icons-material/";
+//CryptoCurrencyIcons ↓
 
 //My Custom Components ↓
 import SplitButton from "./components/SplitButton";
 //My Custom Styles ↓
 import dataGridStyles from "./styles/dataGridStyles";
+import { hover } from "@testing-library/user-event/dist/hover";
 
 function App() {
   //HOOKS
@@ -42,7 +45,7 @@ function App() {
   };
 
   const toggleFullscreen = () => {
-    setIsFullscreen((prevScreen) => !prevScreen)
+    setIsFullscreen((prevScreen) => !prevScreen);
   };
 
   const handleChange = (event, newValue) => {
@@ -176,27 +179,39 @@ function App() {
             <IconButton sx={{ color: "white", marginInline: "2px" }}>
               <DescriptionOutlined />
             </IconButton>
-            <IconButton onClick={toggleFullscreen} sx={{ color: "white", marginInline: "2px" }}>
-              {isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+            <IconButton
+              onClick={toggleFullscreen}
+              sx={{ color: "white", marginInline: "2px" }}
+            >
+              {isFullscreen ? (
+                <FullscreenExitOutlined />
+              ) : (
+                <FullscreenOutlined />
+              )}
             </IconButton>
-            <IconButton onClick={toggleMute} sx={{ color: "white", marginInline: "2px" }}>
+            <IconButton
+              onClick={toggleMute}
+              sx={{ color: "white", marginInline: "2px" }}
+            >
               {isMuted ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
             </IconButton>
             <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              color: "#818cf6",
-              bgcolor: "#1c2233",
-              marginLeft: 'auto',
-              fontWeight: 700,
-              textTransform: "none",
-              "&:hover": {
-                backgroundColor: "darkblue",
-                color: "white",
-              },
-            }}
-          >Analytics</Button>
+              variant="contained"
+              color="primary"
+              sx={{
+                color: "#818cf6",
+                bgcolor: "#1c2233",
+                marginLeft: "auto",
+                fontWeight: 700,
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "darkblue",
+                  color: "white",
+                },
+              }}
+            >
+              Analytics
+            </Button>
           </Toolbar>
         </div>
         <div className="content-box">
@@ -217,13 +232,16 @@ function App() {
             />
           </div>
           <div className="input-container">
-            <button onClick={handleConfirm} className="confirm-button">
+            {/* <div className="button-container"> */}
+            <Button className="bet-button" onClick={handleConfirm} fullHeight>
               BET
-            </button>
-            <Input
+            </Button>
+            {/* </div> */}
+
+            {/* <Input
               value={value}
               onChange={handleInputChange}
-              onBlur={handleBlur}
+              // onBlur={handleBlur}
               inputProps={{
                 step: 1,
                 min: 1,
@@ -231,16 +249,55 @@ function App() {
                 type: "text",
               }}
               className="input-field"
+            /> */}
+            <TextField
+              type="text"
+              className="input-field"
+              variant="outlined"
+              // fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <Button className="max-button">Max</Button>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <select
+
+            <Select
+              defaultValue="boogh"
               value={currency}
               onChange={handleCurrencyChange}
+              variant="outlined"
               className="currency-select"
+              sx={{
+                "& .MuiSvgIcon-root": {
+                  color: "white",
+                },
+                color: "white",
+                display: "flex", //enable flex display
+                alignItems: "center", // vertically center align the items
+              }}
             >
-              <option value="USD">USDT</option>
-              <option value="EUR">BNB</option>
-              <option value="GBP">PEPE</option>
-            </select>
+              <MenuItem value="usdt" className={"menu-item"}>
+                <img
+                  width="24"
+                  height="24"
+                  src={"/icons/usdt.png"}
+                  alt="usdt"
+                />
+                &nbsp;USDT
+              </MenuItem>
+
+              <MenuItem value="eth" className={"menu-item"}>
+                <img width="24" height="24" src={"/icons/eth.png"} alt="eth" />
+                &nbsp;ETH
+              </MenuItem>
+              <MenuItem value="bnb" className={"menu-item"}>
+                <img width="24" height="24" src={"/icons/bnb.png"} alt="bnb" />
+                &nbsp;BNB
+              </MenuItem>
+            </Select>
           </div>
         </div>
 
