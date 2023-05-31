@@ -7,8 +7,45 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import { ArrowDropDown } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles(() => ({
+  splitButtonRoot: {
+    color: 'white!important',
+    margin: "0 8px!important",
+    borderColor: "black!important",
+    // padding: "7px 16px",
+    "&:hover": {
+      backgroundColor: "darkblue!important",
+      color: "white!important",
+    },
+  },
+  mainButton: {
+    backgroundColor: "#1c2233!important",
+    color: "white!important",
+    fontWeight: "bold!important",
+    textTransform: "none!important",
+    "&:hover": {
+      backgroundColor: "darkblue!important",
+      color: "white!important",
+    }
+  },
+  arrowButton:{
+    backgroundColor: "#1c2233ba!important",
+    color: "white!important",
+    fontWeight: "bold!important",
+    "&:hover": {
+      backgroundColor: "darkblue!important", // Change background color on hover
+      color: "white!important", // Change text color on hover
+      // Add more custom styles for hover state
+    },
+  },
+}));
 
 const SplitButton = ({ options }) => {
+  const classes = useStyles();
+
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -37,44 +74,27 @@ const SplitButton = ({ options }) => {
   return (
     <React.Fragment>
       <ButtonGroup
+        className={classes.splitButtonRoot}
         variant="contained"
         ref={anchorRef}
         aria-label="split button"
       >
         <Button
           onClick={handleClick}
-          sx={{
-            backgroundColor: "#1c2233",
-            color: "white",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "darkblue", // Change background color on hover
-              color: "white", // Change text color on hover
-              // Add more custom styles for hover state
-            },
-          }}
+          className={classes.mainButton}
         >
           {options[selectedIndex]}
         </Button>
         <Button
-        sx={{
-          backgroundColor: "#1c2233ba",
-          color: "white",
-          fontWeight: "bold",
-          "&:hover": {
-            backgroundColor: "darkblue", // Change background color on hover
-            color: "white", // Change text color on hover
-            // Add more custom styles for hover state
-          },
-        }}
-          size="small"
-          aria-controls={open ? "split-button-menu" : undefined}
-          aria-expanded={open ? "true" : undefined}
-          aria-label="select merge strategy"
-          aria-haspopup="menu"
-          onClick={handleToggle}
+        className={classes.arrowButton}
+        size="small"
+        aria-controls={open ? "split-button-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-label="select merge strategy"
+        aria-haspopup="menu"
+        onClick={handleToggle}
         >
-          ↓
+          <ArrowDropDown/>
         </Button>
       </ButtonGroup>
       <Popper
