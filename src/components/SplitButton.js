@@ -36,9 +36,8 @@ const useStyles = makeStyles(() => ({
     color: "white!important",
     fontWeight: "bold!important",
     "&:hover": {
-      backgroundColor: "darkblue!important", // Change background color on hover
-      color: "white!important", // Change text color on hover
-      // Add more custom styles for hover state
+      backgroundColor: "darkblue!important",
+      color: "white!important",
     },
   },
 }));

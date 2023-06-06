@@ -42,8 +42,6 @@ const useStyles = makeStyles(() => ({
   transparentToolbar:{
     color: "white",
     fontSize: 18,
-    // backgroundColor: "#818cf6",
-    // outline: "4px solid #818cf6",
     borderRadius: "8px",
     marginInline: "2px",
   },
