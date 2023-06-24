@@ -13,7 +13,7 @@ import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles(() => ({
   diceText: {
     color: "white",
-    fontSize: 32,
+    fontSize: 18,
     marginInline: "2px",
   },
 
@@ -49,7 +49,7 @@ const CustomInfoBar = () => {
 
   return (
     <Toolbar>
-      <b className={"dice-text"}>Dice</b>
+      <b className={classes.diceText}>Dice</b>
       <Tooltip title="Keep Losing Your Money 🤑💸" placement="bottom">
         <IconButton className={classes.icon}>
           <InfoOutlined />

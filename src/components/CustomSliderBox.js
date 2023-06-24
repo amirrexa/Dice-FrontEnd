@@ -8,6 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   contextBox: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles(() => ({
     marginRight: "auto",
   },
 
-  sliderValue: {
+  multiplierValue: {
     textAlign: "center",
     color: "#fff",
     fontSize: "18px",
@@ -127,14 +128,14 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "rgba(53, 53, 53, 0)",
     border: "none",
     outline: "none",
-    fontSize: "1px",
+    fontSize: "16px",
     fontWeight: "bold",
     width: "100%",
     height: "100%",
     /* margin-right: 16px; */
     borderRadius: "17px",
-    justifyContent: "center",
-    padding: "20.5px 14px",
+    // justifyContent: "center",
+    // padding: "20.5px 14px",
   },
 
   currencySelect: {
@@ -181,94 +182,173 @@ const useStyles = makeStyles(() => ({
 
 const CustomSliderBox = () => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(50);
-  const [currency, setCurrency] = React.useState("USDT");
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const handleInputChange = (event) => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
-  };
-  const handleBlur = () => {
-    if (value < 1) {
-      setValue(1);
-    } else if (value > 99) {
-      setValue(99);
+  const [sliderValue, setSliderValue] = React.useState(50);
+  const [betAmount, setBetAmount] = React.useState("");
+  const [currency, setCurrency] = React.useState("");
+  const [multiplier, setMultiplier] = React.useState(1.94);
+
+  // *** I don't remember why I created this ***
+  // const handleChange = (event, newValue) => {
+  //   setValue(newValue);
+  // };
+
+  // *** I don't remember why I created this ***
+  // const handleBlur = () => {
+  //   if (value < 1) {
+  //     setValue(1);
+  //   } else if (value > 99) {
+  //     setValue(99);
+  //   }
+  // };
+
+  const handleSliderChange = (event, newValue) => {
+    setSliderValue(newValue);
+
+    // Calculate the multiplier based on the slider value
+    let multiplier;
+
+
+
+
+
+
+
+
+
+
+
+    if (newValue === 99) {
+      multiplier = 97;
+    } else if (newValue === 1) {
+      multiplier = 0.98;
+    } else {
+      // Calculate the multiplier based on a linear interpolation between 97 and 0.98
+      const range = 99 - 1; // Range of slider values (98)
+      const multiplierRange = 97 - 0.98; // Range of multipliers (96.02)
+      const percentage = (newValue - 1) / range; // Percentage of slider value in the range (0 to 1)
+
+      // Interpolate the multiplier value
+      multiplier = multiplierRange * percentage + 0.98;
     }
+
+    // Format the multiplier with 'x' symbol and set it in the state
+    setMultiplier(multiplier.toFixed(2) + "x");
   };
+
+
   const handleCurrencyChange = (event) => {
     setCurrency(event.target.value);
   };
-  const handleConfirm = () => {
-    // Handle the confirm button click event
-    console.log("Confirmed value:", value);
-    console.log("Selected currency:", currency);
+
+  const handleBetChange = (event) => {
+    // setBetAmount(event.target.value === "" ? "" : Number(event.target.value));
+    setBetAmount(event.target.value);
+    console.log("Death")
+  };
+
+  const handleMaxButtonClick = () => {};
+
+  const handleRollButtonClick = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("https://localhost:7163/Dice/Roll", {
+        // player: {
+        //   name, 
+        //   wallet:{
+        //     address,
+        //     balance
+        //   }
+        // },
+        sliderValue,
+        multiplier,
+        currency,
+        betAmount,
+      });
+
+      // Handle the response from the backend
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className={classes.contextBox}>
-      <div className={classes.sliderContainer}>
-        <div className={classes.sliderValue}>{value}</div>
-        <Slider
-          value={value}
-          onChange={handleChange}
-          min={1}
-          max={99}
-          color="secondary"
-          className={classes.slider}
-        />
-      </div>
-      <div className={classes.inputContainer}>
-        {/* <div className="button-container"> */}
-        <Button
-          className={classes.betButton}
-          onClick={handleConfirm}
-          fullHeight
-        >
-          BET
-        </Button>
-        <TextField
-          type="text"
-          className={classes.inputField}
-          variant="outlined"
-          // fullWidth
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="start">
-                <Button className={classes.maxButton}>Max</Button>
-              </InputAdornment>
-            ),
-          }}
-        />
+    <form onSubmit={handleRollButtonClick}>
+      <div className={classes.contextBox}>
+        <div className={classes.sliderContainer}>
+          <div className={classes.multiplierValue}>{multiplier}</div>
+          <Slider
+            value={sliderValue}
+            onChange={handleSliderChange}
+            min={1}
+            max={99}
+            color="secondary"
+            className={classes.slider}
+          />
+          <div className={classes.multiplierValue}>{sliderValue}</div>
+        </div>
+        <div className={classes.inputContainer}>
+          <Button
+            className={classes.betButton}
+            onClick={() =>
+              console.log("Bet Button Clicked (No actual functionality)")
+            }
+            fullHeight
+          >
+            BET
+          </Button>
+          <TextField
+            type="text"
+            className={classes.inputField}
+            variant="outlined"
+            // value
+            // fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <Button
+                    className={classes.maxButton}
+                    onClick={handleMaxButtonClick}
+                  >
+                    Max
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-        <Select
-          defaultValue="Choose"
-          value={currency}
-          onChange={handleCurrencyChange}
-          variant="outlined"
-          className={classes.currencySelect}
-        >
-          <MenuItem value="usdt" className={classes.menuItem}>
-            <img width="24" height="24" src={"/icons/usdt.png"} alt="usdt" />
-            &nbsp;USDT
-          </MenuItem>
+          <Select
+            defaultValue="Choose"
+            value={currency}
+            onChange={handleCurrencyChange}
+            variant="outlined"
+            className={classes.currencySelect}
+          >
+            <MenuItem value="usdt" className={classes.menuItem}>
+              <img width="24" height="24" src={"/icons/usdt.png"} alt="usdt" />
+              &nbsp;USDT
+            </MenuItem>
 
-          <MenuItem value="eth" className={classes.menuItem}>
-            <img width="24" height="24" src={"/icons/eth.png"} alt="eth" />
-            &nbsp;ETH
-          </MenuItem>
-          <MenuItem value="bnb" className={classes.menuItem}>
-            <img width="24" height="24" src={"/icons/bnb.png"} alt="bnb" />
-            &nbsp;BNB
-          </MenuItem>
-        </Select>
+            <MenuItem value="eth" className={classes.menuItem}>
+              <img width="24" height="24" src={"/icons/eth.png"} alt="eth" />
+              &nbsp;ETH
+            </MenuItem>
+            <MenuItem value="bnb" className={classes.menuItem}>
+              <img width="24" height="24" src={"/icons/bnb.png"} alt="bnb" />
+              &nbsp;BNB
+            </MenuItem>
+          </Select>
+        </div>
+        <center>
+          <Button
+            className={classes.rollButton}
+            sx={{ marginTop: "10px" }}
+            type="submit"
+          >
+            Roll
+          </Button>
+        </center>
       </div>
-      <center>
-        <Button className={classes.rollButton} sx={{ marginTop: "10px" }}>
-          Roll
-        </Button>
-      </center>
-    </div>
+    </form>
   );
 };
 

@@ -3,6 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 import { Button, Card, CardContent, IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   dataGrid: {
@@ -111,21 +112,59 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomDataGrid = ({ rows, columns }) => {
+const columns = [
+  // { field: "id", headerName: "ID", width: 10 },
+  { field: "playerWalletAddress", headerName: "Player", width: 150 },
+  { field: "multiplier", headerName: "Multiplier", width: 100 },
+  { field: "rolledValue", headerName: "Rolled", width: 100 },
+  { field: "payout", headerName: "Payout", width: 100 },
+  { field: "time", headerName: "Time", width: 200 },
+];
+
+const CustomDataGrid = () => {
   const classes = useStyles();
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [rows, setRows] = React.useState([]);
+  const [entries, setEntries] = React.useState([]);
+
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get('https://localhost:7163/Dice/AllEntries');
+      setEntries(response.data);
+    } catch (error) {
+      console.error('Error retrieving game entries:', error);
+    }
+  }
+
   const handleRowClick = (params) => {
     setSelectedRow(params.row);
     console.log(params.row);
   };
+
   const handleClose = () => {
     setSelectedRow(null);
   };
 
+  React.useEffect(() => {
+    fetchEntries();
+  }, []);
+
+
+  // React.useEffect(() => {
+  //   axios.get('/Dice/AllEntries')
+  //     .then(response => {
+  //       setRows(response.data);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching table entries:', error);
+  //     });
+  // }, []);
+
+
   return (
     <div className={classes.dataGridContainer}>
       <DataGrid
-        rows={rows}
+        rows={entries}
         columns={columns}
         className={classes.dataGrid}
         onRowClick={handleRowClick}
@@ -144,14 +183,16 @@ const CustomDataGrid = ({ rows, columns }) => {
               </div>
             <CardContent>
               <Typography variant="h5" component="div">
-                Player: {selectedRow.col1}
+                Player: {selectedRow.playerWalletAddress}
               </Typography>
-              <Typography variant="body1">
-                Target: {selectedRow.col2}
+              <Typography variant="body2">
+                Multiplier: {selectedRow.multiplier}
                 <br />
-                Rolled: {selectedRow.col3}
+                Rolled: {selectedRow.rolledValue}
                 <br />
-                Payout: {selectedRow.col4}
+                Payout: {selectedRow.payout}
+                <br />
+                Time: {selectedRow.time}
               </Typography>
               {/* Render other details */}
             </CardContent>          
