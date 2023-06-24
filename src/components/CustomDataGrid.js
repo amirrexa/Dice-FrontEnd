@@ -114,10 +114,11 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   // { field: "id", headerName: "ID", width: 10 },
-  { field: "playerWalletAddress", headerName: "Player", width: 150 },
-  { field: "multiplier", headerName: "Multiplier", width: 100 },
-  { field: "rolledValue", headerName: "Rolled", width: 100 },
-  { field: "payout", headerName: "Payout", width: 100 },
+  {field: "outcomeResult", headerName: "Outcome", width: 150},
+  { field: "walletAddress", headerName: "Player", width: 200 },
+  { field: "multiplier", headerName: "Multiplier", width: 150 },
+  { field: "rolledValue", headerName: "Rolled", width: 150 },
+  { field: "payout", headerName: "Payout", width: 150 },
   { field: "time", headerName: "Time", width: 200 },
 ];
 
@@ -149,18 +150,6 @@ const CustomDataGrid = () => {
     fetchEntries();
   }, []);
 
-
-  // React.useEffect(() => {
-  //   axios.get('/Dice/AllEntries')
-  //     .then(response => {
-  //       setRows(response.data);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error fetching table entries:', error);
-  //     });
-  // }, []);
-
-
   return (
     <div className={classes.dataGridContainer}>
       <DataGrid
@@ -183,7 +172,7 @@ const CustomDataGrid = () => {
               </div>
             <CardContent>
               <Typography variant="h5" component="div">
-                Player: {selectedRow.playerWalletAddress}
+                Player: {selectedRow.walletAddress}
               </Typography>
               <Typography variant="body2">
                 Multiplier: {selectedRow.multiplier}

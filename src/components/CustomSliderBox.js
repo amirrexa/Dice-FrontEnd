@@ -21,14 +21,12 @@ const useStyles = makeStyles(() => ({
     top: "30%",
     width: "35%",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    /* opacity: 0; */
     padding: "40px",
     borderRadius: "11px",
   },
 
   sliderContainer: {
     justifyContent: "center",
-    /* width: 100%; */
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: "16px",
     borderRadius: "8px",
@@ -132,10 +130,7 @@ const useStyles = makeStyles(() => ({
     fontWeight: "bold",
     width: "100%",
     height: "100%",
-    /* margin-right: 16px; */
     borderRadius: "17px",
-    // justifyContent: "center",
-    // padding: "20.5px 14px",
   },
 
   currencySelect: {
@@ -144,30 +139,16 @@ const useStyles = makeStyles(() => ({
     fontSize: "100%!important",
     textAlign: "center",
     backgroundColor: "rgba(0, 0, 0, 0)",
-    /* margin-left: auto; */
-    /* margin-top: auto; */
     width: "30%!important",
-    /* display: flex!important; */
     border: "none",
     outline: "none",
     color: "white",
-    /* align-items: center!important; */
     justifyContent: "center",
     "& .MuiSvgIcon-root": {
       color: "white",
     },
     display: "flex", //enable flex display
     alignItems: "center", // vertically center align the items
-
-    // '&:.MuiMenuItem-root': {
-    //   display: flex;
-    //   align-items: center;
-    // }
-
-    // .currency-select .menu-item-container {
-    //   display: flex;
-    //   align-items: center;
-    // }
   },
 
   menuItem: {
@@ -183,104 +164,75 @@ const useStyles = makeStyles(() => ({
 const CustomSliderBox = () => {
   const classes = useStyles();
   const [sliderValue, setSliderValue] = React.useState(50);
-  const [betAmount, setBetAmount] = React.useState("");
-  const [currency, setCurrency] = React.useState("");
-  const [multiplier, setMultiplier] = React.useState(1.94);
-
-  // *** I don't remember why I created this ***
-  // const handleChange = (event, newValue) => {
-  //   setValue(newValue);
-  // };
-
-  // *** I don't remember why I created this ***
-  // const handleBlur = () => {
-  //   if (value < 1) {
-  //     setValue(1);
-  //   } else if (value > 99) {
-  //     setValue(99);
-  //   }
-  // };
+  const [multiplier, setMultiplier] = React.useState(5);
+  const [betAmount, setBetAmount] = React.useState(0);
+  const [selectedCurrency, setSelectedCurrency] = React.useState("usdt");
+  const walletAddress = sessionStorage.getItem("walletAddress");
+  const walletBalance = sessionStorage.getItem("walletBalance");
 
   const handleSliderChange = (event, newValue) => {
     setSliderValue(newValue);
 
     // Calculate the multiplier based on the slider value
-    let multiplier;
-
-
-
-
-
-
-
-
-
-
-
-    if (newValue === 99) {
-      multiplier = 97;
-    } else if (newValue === 1) {
-      multiplier = 0.98;
-    } else {
-      // Calculate the multiplier based on a linear interpolation between 97 and 0.98
-      const range = 99 - 1; // Range of slider values (98)
-      const multiplierRange = 97 - 0.98; // Range of multipliers (96.02)
-      const percentage = (newValue - 1) / range; // Percentage of slider value in the range (0 to 1)
-
-      // Interpolate the multiplier value
-      multiplier = multiplierRange * percentage + 0.98;
-    }
-
-    // Format the multiplier with 'x' symbol and set it in the state
-    setMultiplier(multiplier.toFixed(2) + "x");
+    let multiplier = sliderValue/10;
+    // if (newValue === 99) {
+    //   multiplier = 97;
+    // } else if (newValue === 1) {
+    //   multiplier = 0.98;
+    // } else {
+    //   const range = 99 - 1;
+    //   const multiplierRange = 97 - 0.98;
+    //   const percentage = (newValue - 1) / range;
+    //   multiplier = multiplierRange * percentage + 0.98;
+    // }
+    // setMultiplier(multiplier.toFixed(2) + "x"); // num + x
+    setMultiplier(multiplier);
   };
 
-
-  const handleCurrencyChange = (event) => {
-    setCurrency(event.target.value);
+  const handleMaxButtonClick = () => {
+    setBetAmount(walletBalance);
   };
 
-  const handleBetChange = (event) => {
-    // setBetAmount(event.target.value === "" ? "" : Number(event.target.value));
-    setBetAmount(event.target.value);
-    console.log("Death")
-  };
+  const handleCurrencyOnChange = (event) => setSelectedCurrency(event.target.value);
 
-  const handleMaxButtonClick = () => {};
+  const handleBetAmountOnChange = (event) => setBetAmount(event.target.value);
 
   const handleRollButtonClick = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("https://localhost:7163/Dice/Roll", {
-        // player: {
-        //   name, 
-        //   wallet:{
-        //     address,
-        //     balance
-        //   }
-        // },
-        sliderValue,
-        multiplier,
-        currency,
-        betAmount,
-      });
+      const request = new FormData();
+      request.append("walletAddress", walletAddress);
+      request.append("walletBalance", walletBalance);
+      request.append("sliderValue", sliderValue);
+      request.append("selectedCurrency", selectedCurrency);
+      request.append("betAmount", betAmount);
+      request.append("multiplier", multiplier);
 
-      // Handle the response from the backend
+      const response = await axios
+        .post("https://localhost:7163/Dice/Roll", request)
+        .then((response) => console.log(response.data));
     } catch (error) {
-      console.log(error);
+      console.log("ERROR: ", error);
     }
   };
 
   return (
     <form onSubmit={handleRollButtonClick}>
+      {/* Hidden Inputs From PlayerBox */}
+      <input type="hidden" name="walletAddress" value={walletAddress} />
+      <input type="hidden" name="walletBalance" value={walletBalance} />
+
       <div className={classes.contextBox}>
         <div className={classes.sliderContainer}>
-          <div className={classes.multiplierValue}>{multiplier}</div>
+          <div className={classes.multiplierValue} name="Multiplier">
+            {multiplier}
+          </div>
           <Slider
             value={sliderValue}
+            name="sliderValue"
             onChange={handleSliderChange}
             min={1}
-            max={99}
+            max={100}
             color="secondary"
             className={classes.slider}
           />
@@ -298,8 +250,11 @@ const CustomSliderBox = () => {
           </Button>
           <TextField
             type="text"
+            name="betAmount"
+            value={betAmount}
             className={classes.inputField}
             variant="outlined"
+            onChange={handleBetAmountOnChange}
             // value
             // fullWidth
             InputProps={{
@@ -317,9 +272,9 @@ const CustomSliderBox = () => {
           />
 
           <Select
-            defaultValue="Choose"
-            value={currency}
-            onChange={handleCurrencyChange}
+            value={selectedCurrency}
+            name="selectedCurrency"
+            onChange={handleCurrencyOnChange}
             variant="outlined"
             className={classes.currencySelect}
           >

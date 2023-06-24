@@ -50,7 +50,7 @@ const CustomInfoBar = () => {
   return (
     <Toolbar>
       <b className={classes.diceText}>Dice</b>
-      <Tooltip title="Keep Losing Your Money 🤑💸" placement="bottom">
+      <Tooltip title="Keep Gambling 🤑💸" placement="bottom">
         <IconButton className={classes.icon}>
           <InfoOutlined />
         </IconButton>
