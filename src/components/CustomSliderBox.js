@@ -23,6 +23,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: "40px",
     borderRadius: "11px",
+    color: "white !important",
   },
 
   sliderContainer: {
@@ -57,31 +58,33 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
     backgroundColor: "rgba(34, 34, 34, 0.5)",
     marginTop: "0%",
-    borderEadius: "17px",
+    borderRadius: "17px",
     boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
     border: "none",
     outline: "none",
+    color: "white",
   },
 
   betButton: {
-    border: "none !important",
-    backgroundColor: "transparent !important",
-    padding: "0 !important",
-    color: "white !important",
-    fontWeight: "bold!important",
-    boxShadow: "none !important",
-    outline: "none !important",
-    height: "56px !important",
-    width: "20%!important",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "none",
+    backgroundColor: "transparent",
+    color: "white",
+    fontWeight: "bold",
+    outline: "none",
+    height: "56px",
+    width: "20%",
     borderRadius: "17px!important",
     "&:hover": {
-      backgroundColor: "#818cf6 !important",
-      color: "white!important",
+      backgroundColor: "#818cf6",
+      color: "white",
       fontWeight: "bold",
-      borderRadius: "17px!important",
+      borderRadius: "17px",
     },
     "&:active": {
-      borderRadius: "17px!important;",
+      borderRadius: "17px;",
     },
   },
 
@@ -119,10 +122,13 @@ const useStyles = makeStyles(() => ({
     "&:active": {
       borderRadius: "17px!important;",
     },
+
+    "&:disabled": {
+      opacity: 0.5,
+    },
   },
 
   inputField: {
-    color: "#fff !important",
     backgroundColor: "rgba(53, 53, 53, 0)",
     border: "none",
     outline: "none",
@@ -131,6 +137,9 @@ const useStyles = makeStyles(() => ({
     width: "100%",
     height: "100%",
     borderRadius: "17px",
+    "& .MuiInputBase-input.MuiOutlinedInput-input": {
+      color: "white !important",
+    },
   },
 
   currencySelect: {
@@ -142,7 +151,7 @@ const useStyles = makeStyles(() => ({
     width: "30%!important",
     border: "none",
     outline: "none",
-    color: "white",
+    color: "white!important",
     justifyContent: "center",
     "& .MuiSvgIcon-root": {
       color: "white",
@@ -167,57 +176,73 @@ const CustomSliderBox = () => {
   const [multiplier, setMultiplier] = React.useState(5);
   const [betAmount, setBetAmount] = React.useState(0);
   const [selectedCurrency, setSelectedCurrency] = React.useState("usdt");
-  const walletAddress = sessionStorage.getItem("walletAddress");
-  const walletBalance = sessionStorage.getItem("walletBalance");
+  const [isFormValid, setIsFormValid] = React.useState(false);
+  const [walletAddress, setWalletAddress] = React.useState(
+    sessionStorage.getItem("walletAddress")
+  );
+  const [walletBalance, setWalletBalance] = React.useState(
+    sessionStorage.getItem("walletBalance")
+  );
+
+  React.useEffect(() => {
+    handleFormOnChange();
+  }, [
+    walletAddress,
+    walletBalance,
+    sliderValue,
+    selectedCurrency,
+    betAmount,
+    multiplier,
+  ]);
 
   const handleSliderChange = (event, newValue) => {
     setSliderValue(newValue);
+    setMultiplier(newValue / 10);
+  };
 
-    // Calculate the multiplier based on the slider value
-    let multiplier = sliderValue/10;
-    // if (newValue === 99) {
-    //   multiplier = 97;
-    // } else if (newValue === 1) {
-    //   multiplier = 0.98;
-    // } else {
-    //   const range = 99 - 1;
-    //   const multiplierRange = 97 - 0.98;
-    //   const percentage = (newValue - 1) / range;
-    //   multiplier = multiplierRange * percentage + 0.98;
-    // }
-    // setMultiplier(multiplier.toFixed(2) + "x"); // num + x
-    setMultiplier(multiplier);
+  const handleFormOnChange = () => {
+    const isAnyInputEmpty =
+      !walletAddress ||
+      !walletBalance ||
+      // !sliderValue ||
+      !selectedCurrency ||
+      !betAmount ||
+      !multiplier;
+    const isBetAmountValid = betAmount !== "" && betAmount > 0;
+    setIsFormValid(!isAnyInputEmpty && isBetAmountValid);
   };
 
   const handleMaxButtonClick = () => {
-    setBetAmount(walletBalance);
+    setBetAmount(sessionStorage.getItem("walletBalance"));
   };
 
-  const handleCurrencyOnChange = (event) => setSelectedCurrency(event.target.value);
+  const handleCurrencyOnChange = (event) =>
+    setSelectedCurrency(event.target.value);
 
   const handleBetAmountOnChange = (event) => setBetAmount(event.target.value);
 
   const handleRollButtonClick = async (event) => {
     event.preventDefault();
     try {
-      const request = new FormData();
-      request.append("walletAddress", walletAddress);
-      request.append("walletBalance", walletBalance);
-      request.append("sliderValue", sliderValue);
-      request.append("selectedCurrency", selectedCurrency);
-      request.append("betAmount", betAmount);
-      request.append("multiplier", multiplier);
+      const requestData = {
+        walletAddress,
+        walletBalance,
+        sliderValue,
+        selectedCurrency,
+        betAmount,
+        multiplier,
+      };
 
-      const response = await axios
-        .post("https://localhost:7163/Dice/Roll", request)
-        .then((response) => console.log(response.data));
+      await axios
+        .post("https://localhost:7163/Dice/Roll", requestData)
+        .then((response) => setWalletBalance(response.data.player.Balance));
     } catch (error) {
       console.log("ERROR: ", error);
     }
   };
 
   return (
-    <form onSubmit={handleRollButtonClick}>
+    <form onSubmit={handleRollButtonClick} onChange={handleFormOnChange}>
       {/* Hidden Inputs From PlayerBox */}
       <input type="hidden" name="walletAddress" value={walletAddress} />
       <input type="hidden" name="walletBalance" value={walletBalance} />
@@ -232,22 +257,23 @@ const CustomSliderBox = () => {
             name="sliderValue"
             onChange={handleSliderChange}
             min={1}
-            max={100}
+            max={99}
             color="secondary"
             className={classes.slider}
           />
           <div className={classes.multiplierValue}>{sliderValue}</div>
         </div>
         <div className={classes.inputContainer}>
-          <Button
+          <div
             className={classes.betButton}
             onClick={() =>
               console.log("Bet Button Clicked (No actual functionality)")
             }
+            variant="standard"
             fullHeight
           >
             BET
-          </Button>
+          </div>
           <TextField
             type="text"
             name="betAmount"
@@ -255,8 +281,6 @@ const CustomSliderBox = () => {
             className={classes.inputField}
             variant="outlined"
             onChange={handleBetAmountOnChange}
-            // value
-            // fullWidth
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -287,6 +311,7 @@ const CustomSliderBox = () => {
               <img width="24" height="24" src={"/icons/eth.png"} alt="eth" />
               &nbsp;ETH
             </MenuItem>
+
             <MenuItem value="bnb" className={classes.menuItem}>
               <img width="24" height="24" src={"/icons/bnb.png"} alt="bnb" />
               &nbsp;BNB
@@ -298,6 +323,7 @@ const CustomSliderBox = () => {
             className={classes.rollButton}
             sx={{ marginTop: "10px" }}
             type="submit"
+            disabled={!isFormValid}
           >
             Roll
           </Button>

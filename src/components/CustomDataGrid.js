@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
   dataGridContainer: {
     height: 300,
-    width: "60%",
+    width: "70%",
     margin: "auto",
     marginTop: "24px",
   },
@@ -125,7 +125,6 @@ const columns = [
 const CustomDataGrid = () => {
   const classes = useStyles();
   const [selectedRow, setSelectedRow] = React.useState(null);
-  const [rows, setRows] = React.useState([]);
   const [entries, setEntries] = React.useState([]);
 
   const fetchEntries = async () => {

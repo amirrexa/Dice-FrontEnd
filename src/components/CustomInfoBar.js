@@ -11,6 +11,7 @@ import {
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(() => ({
+
   diceText: {
     color: "white",
     fontSize: 18,
@@ -48,36 +49,32 @@ const CustomInfoBar = () => {
   };
 
   return (
-    <Toolbar>
-      <b className={classes.diceText}>Dice</b>
-      <Tooltip title="Keep Gambling 🤑💸" placement="bottom">
+    <div className={classes.wrapper}>
+      <Toolbar>
+        <b className={classes.diceText}>Dice</b>
+        <Tooltip title="Keep Gambling 🤑💸" placement="bottom">
+          <IconButton className={classes.icon}>
+            <InfoOutlined />
+          </IconButton>
+        </Tooltip>
         <IconButton className={classes.icon}>
-          <InfoOutlined />
+          <DescriptionOutlined />
         </IconButton>
-      </Tooltip>
-      <IconButton className={classes.icon}>
-        <DescriptionOutlined />
-      </IconButton>
-      <IconButton
-        onClick={toggleFullscreen}
-        className={classes.icon}
-      >
-        {isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
-      </IconButton>
-      <IconButton
-        onClick={toggleMute}
-        className={classes.icon}
-      >
-        {isMuted ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
-      </IconButton>
-      <Button
-        variant="contained"
-        color="primary"
-        className={classes.analyticsButton}
-      >
-        Analytics
-      </Button>
-    </Toolbar>
+        <IconButton onClick={toggleFullscreen} className={classes.icon}>
+          {isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+        </IconButton>
+        <IconButton onClick={toggleMute} className={classes.icon}>
+          {isMuted ? <VolumeOffOutlined /> : <VolumeUpOutlined />}
+        </IconButton>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.analyticsButton}
+        >
+          Analytics
+        </Button>
+      </Toolbar>
+    </div>
   );
 };
 

@@ -7,7 +7,12 @@ import SplitButton from "./SplitButton";
 
 const useStyles = makeStyles(() => ({
 
+wrapper: {
+  marginBottom: "54px"
+},
+
   appBar: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)!important',
   },
 
   toolbar: {
@@ -51,7 +56,8 @@ const CustomAppBar = () => {
   const classes = useStyles();
 
   return (
-    <AppBar className={classes.root}>
+    <div className={classes.wrapper}>
+    <AppBar className={classes.appBar}>
       <Toolbar className={classes.toolbar}>
       <Button className={classes.swapButton}>Swap</Button>
         <div> { /* For putting the buttons next to each other */}
@@ -62,6 +68,7 @@ const CustomAppBar = () => {
         </div>
       </Toolbar>
     </AppBar>
+    </div>
   );
 };
 

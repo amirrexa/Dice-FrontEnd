@@ -9,20 +9,13 @@ import CustomSliderBox from "./components/CustomSliderBox";
 import PlayerBox from "./components/PlayerBox";
 
 function App() {
-  const [playerData, setPlayerData] = React.useState({playerName:'', walletAddress:'', walletBalance:''});
-
-  const handlePlayerDataUpdate = (data) => {
-    setPlayerData(data);
-  };
-
   return (
-    
     <>
       <CustomAppBar />
-      <body>
+      <body sx={{ color: "white" }}>
         <CustomInfoBar />
-        <PlayerBox onPlayerDataUpdate={handlePlayerDataUpdate}/>
-        <CustomSliderBox playerData={playerData}/>
+        <PlayerBox />
+        <CustomSliderBox />
         <CustomDataGrid />
       </body>
     </>

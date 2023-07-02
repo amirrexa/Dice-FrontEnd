@@ -15,22 +15,28 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center!important",
     display: "flex",
     padding: "10px",
+    color: "white !important",
   },
 
   textField: {
     backgroundColor: "rgba(132, 0, 255, 0.303)",
-    color: "white!important",
     borderRadius: "11px",
     border: "none!important",
     outline: "none!important",
     width: "100%!important",
     height: "100%!important",
     marginLeft: "auto",
+    "& .MuiInputBase-input-MuiInput-input": {
+      color: "white !important",
+    },
+    "& .MuiInputBase-input.MuiOutlinedInput-input": {
+      color: "white !important",
+    },
   },
 
   card: {
     backgroundColor: "transparent!important",
-    color: "white!important",
+    color: "white !important",
     marginRight: "auto",
     margin: "auto",
     height: "!important",
@@ -55,15 +61,17 @@ const useStyles = makeStyles(() => ({
     "&:active": {
       borderRadius: "17px!important;",
     },
+    "&:disabled": {
+      opacity: 0.5,
+    },
   },
 }));
 
 const PlayerBox = () => {
   const classes = useStyles();
-  const walletAddressRef = React.useRef();
-  
+
   React.useEffect(() => {
-    sessionStorage.removeItem("walletAddress")
+    sessionStorage.removeItem("walletAddress");
     sessionStorage.removeItem("walletBalance");
   }, []);
 
@@ -74,13 +82,15 @@ const PlayerBox = () => {
     sessionStorage.getItem("walletBalance") || null
   );
 
+  const isWalletAddressEmpty = walletAddress.trim() === "";
+
   React.useEffect(() => {
     const storedWalletAddress = sessionStorage.getItem("walletAddress");
     const storedWalletBalance = sessionStorage.getItem("walletBalance");
 
     setWalletAddress(storedWalletAddress || "");
     setWalletBalance(storedWalletBalance || null);
-  }, []);
+  }, [walletAddress, walletBalance]);
 
   const handleLogin = async () => {
     try {
@@ -92,55 +102,45 @@ const PlayerBox = () => {
           },
         }
       );
-  
+
       const newWalletBalance = response.data.balance;
       sessionStorage.setItem("walletBalance", newWalletBalance);
       setWalletBalance(newWalletBalance); // update wallet balance state immediately
-  
     } catch (error) {
       console.error("Error loading player:", error);
     }
   };
-  
 
   const handleWalletAddressOnChange = (event) => {
     const newWalletAddress = event.target.value;
     setWalletAddress(newWalletAddress);
     sessionStorage.setItem("walletAddress", newWalletAddress);
   };
-  
 
   return (
     <>
       <div className={classes.cardContainer}>
-        <Card className={classes.card} sx={{textAlign: 'center'}}>
-            <CardContent className={classes.card}>
-              <b>Wallet Address: </b>
-              <TextField
-                inputRef={walletAddressRef}
-                variant="standard"
-                type="text"
-                onChange={handleWalletAddressOnChange}
-                className={classes.textField}
-                placeholder="Wallet Address"              />
-              <br />
-                <b>Wallet Balance: </b>
-                <TextField
-  value={walletBalance !== null ? walletBalance : ""}
-  className={classes.textField}
-                  variant="standard"
-                  InputProps={{
-                    readOnly: true,
-                    onClick: (event) => event.preventDefault(),
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                ></TextField>
-              </CardContent>
-              <Button className={classes.loginButton} onClick={handleLogin} >
-                Login
-              </Button>
+        <Card className={classes.card} sx={{ textAlign: "center" }}>
+          <CardContent className={classes.card}>
+            <b>Wallet Address: </b>
+            <TextField
+              variant="outlined"
+              type="text"
+              onChange={handleWalletAddressOnChange}
+              className={classes.textField}
+              placeholder="Wallet Address"
+            />
+            <br />
+            <b>Wallet Balance: </b>
+            <div className={classes.textField}>{walletBalance}</div>
+          </CardContent>
+          <Button
+            className={classes.loginButton}
+            onClick={handleLogin}
+            disabled={isWalletAddressEmpty}
+          >
+            Login
+          </Button>
         </Card>
       </div>
     </>
